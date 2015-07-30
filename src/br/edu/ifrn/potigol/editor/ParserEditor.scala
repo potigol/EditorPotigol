@@ -10,12 +10,13 @@ import br.edu.ifrn.potigol.Compilador
 import scala.util.Success
 
 object ParserEditor {
-  def parse(r: String): List[Token] = {
+  def parse(r: String, channel: Int = 0): List[Token] = {
     val input = new ANTLRInputStream(r)
     val lexer = new potigolLexer(input)
     val tokens = new CommonTokenStream(lexer)
     val parser = new potigolParser(tokens)
     val tree = parser.prog()
+   
     val walker = new ParseTreeWalker()
     val listener = new HighLight()
     walker.walk(listener, tree)

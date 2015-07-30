@@ -18,3 +18,4 @@ class HighLight extends ParseTreeListener {
   }
   def getSaida() = tokens
 }
+
