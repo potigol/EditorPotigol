@@ -31,6 +31,7 @@ object Editor extends SimpleSwingApplication {
   //    override def write(i: Int) {}
   //  }))
 
+  val compilador = new br.edu.ifrn.potigol.Compilador(false)
   var arq: Option[String] = None
   var modificado = false
   val fontname = "DejaVu Sans Mono"
@@ -299,10 +300,14 @@ object Editor extends SimpleSwingApplication {
         val executar = new MenuItem("Executar") {
           iconTextGap = 20
           action = Action("Executar") {
+            println(compilador.linhaErro(editor.text) )
+
+            val rt = Runtime.getRuntime()
             if (!modificado) {
+              rt.exec("cmd.exe /T:1F /c start exec.bat " + arq.get)
               //              Seq("cmd","dir") lines
-              Seq("cmd start /k cmd dir")
-              Seq("cmd", "dir").!
+              //              Seq("cmd start /k cmd dir")
+              //             Seq("cmd", "dir").!
               //             val x = s"""cmd start "Potigol" /W dir""" lineStream;
               //             println(x)
             }
@@ -310,8 +315,8 @@ object Editor extends SimpleSwingApplication {
               salvar {
                 itemSalvar.action.apply()
               } {
-                s"%~dp0potigol.bat {arq.get}" lineStream
-
+                rt.exec("cmd.exe /t:1F /c start exec.bat " + arq.get)
+                //                s"%~dp0potigol.bat {arq.get}" lineStream
                 //                "ls" #| "grep .scala" #&& Seq("sh", "-c", "scalac *.scala") #|| "echo nothing found" lines
               }
             }
@@ -492,7 +497,7 @@ object Editor extends SimpleSwingApplication {
           case ID                            => config.bege
           case INT | FLOAT | BOOLEANO | CHAR => config.azul
           case STRING | BS | MS | ES         => config.amarelo
-          case COMMENT                       => config.cinza
+          case COMMENT                       => config.vermelho
           case _                             => config.vermelho
         }
         styledDocument.setCharacterAttributes(a, b, s, true)
@@ -502,7 +507,6 @@ object Editor extends SimpleSwingApplication {
       editor.text = scala.io.Source.fromFile(arq.get, "utf-8").getLines.mkString("\n")
       atualizar()
     }
-
   }
 
   object config {
