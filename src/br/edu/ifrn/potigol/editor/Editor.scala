@@ -537,8 +537,8 @@ object Sobre extends Frame {
     contentType = "text/html"
     text = """<html><body><h1>Editor Potigol</h1>
              |<p>
-             |Versão: 0.9.3<br/>
-             |14/05/2015
+             |Versão: 0.9.4<br/>
+             |05/08/2015
              |<p>
              |(c) Copyright Leonardo Lucena, 2015.<p>
              |Visite: <a href="http://potigol.github.io">http://potigol.github.io</a>
