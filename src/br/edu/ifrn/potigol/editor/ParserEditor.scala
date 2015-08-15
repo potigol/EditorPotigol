@@ -34,4 +34,17 @@ object ParserEditor {
     val saida = listener.getSaida
     if (parser.getNumberOfSyntaxErrors > 0) r else saida
   }
+  
+  def print(r: String)  = {
+    val input = new ANTLRInputStream(r)
+    val lexer = new potigolLexer(input)
+    val tokens = new CommonTokenStream(lexer)
+    val parser = new potigolParser(tokens)
+    val tree = parser.prog()
+    val walker = new ParseTreeWalker() 
+    val listener = new PrinterListener(tokens)
+    walker.walk(listener, tree)
+    val saida = listener.getSaida
+    saida
+  }
 }

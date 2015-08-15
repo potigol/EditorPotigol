@@ -17,8 +17,6 @@ import scala.swing.event.KeyTyped
 import scala.swing.event.Key
 import scala.swing.event._
 
-
-
 class TextPane() extends TextComponent {
   override lazy val peer: JTextPane = new JTextPane with SuperMixin
   def contentType: String = peer.getContentType

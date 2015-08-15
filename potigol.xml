@@ -11,6 +11,5 @@
             <fileset dir="C:/Users/Lucena/workspace/luna/PotigolEditor/bin"/>
         </jar>
         <copy file="C:/Users/Lucena/workspace/luna/PotigolEditor/fonts/DejaVuSansMono.ttf" todir="C:/Users/Lucena/workspace/luna/PotigolEditor/bin/fonts"/>
-   
     </target>
 </project>

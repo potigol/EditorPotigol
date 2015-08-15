@@ -40,6 +40,14 @@ object Editor extends SimpleSwingApplication {
   var corFundo = new Color(39, 40, 34)
   val undo = Stack[(String, Int)]()
 
+  override def main(args: Array[String]) {
+    super.main(args)
+    if (args.length > 0) {
+      arq = Some(args(1))
+      modificado = false
+    }
+  }
+  /*
   override def startup(args: Array[String]) {
     println(args.length)
     if (args.length > 0) {
@@ -48,13 +56,19 @@ object Editor extends SimpleSwingApplication {
     }
     super.startup(args)
   }
-
+*/
   def top = new MainFrame {
     import javax.imageio.ImageIO
     val i = ImageIO.read(getClass().getResource("potigol.png"));
     iconImage = i
     this.location = new Point(200, 100)
     title = s"${arq.getOrElse("Sem nome")} - Potigol"
+    /*   arq match {
+      case Some(nome) =>
+        editor.text = scala.io.Source.fromFile(nome, "utf-8").getLines.mkString("\n")
+        atualizar()
+      case None=>
+    }*/
 
     val numeracao = new TextPane() {
       border = BorderFactory.createCompoundBorder(border,
@@ -159,15 +173,17 @@ object Editor extends SimpleSwingApplication {
           iconTextGap = 20
           peer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK))
         }
+
         val itemFormatar = new MenuItem("Formatar código") {
           action = Action("Formatar") {
-            editor.text = ParserEditor.pretty(editor.text) //Pretty.print(editor.text)
+            editor.text = ParserEditor.pretty(editor.text)
             texto = ""
             atualizar
           }
           iconTextGap = 20
           peer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK))
         }
+
         contents += itemDesfazer
         contents += new Separator
         contents += itemRecortar
@@ -233,7 +249,6 @@ object Editor extends SimpleSwingApplication {
                   res match {
                     case FileChooser.Result.Approve =>
                       arq = Some(arquivo.selectedFile.getPath)
-                      println(arq)
                       editor.text = scala.io.Source.fromFile(arq.get, "utf-8").getLines.mkString("\n")
                       atualizar()
                       modificado = false
@@ -295,12 +310,25 @@ object Editor extends SimpleSwingApplication {
           this.enabled = true
           peer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK))
         }
+        val itemImprimir = new MenuItem("Imprimir") {
+          action = Action("Imprimir") {
+            val writer = new PrintWriter("print.html", "UTF-8")
+            writer.print(ParserEditor.print(editor.text))
+            writer.close()
+            Css.save
+            import java.awt.Desktop
+            import java.net.URI
+            Desktop.getDesktop.browse(new URI("print.html"))
 
+          }
+          iconTextGap = 20
+          peer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK))
+        }
         import scala.sys.process._
         val executar = new MenuItem("Executar") {
           iconTextGap = 20
           action = Action("Executar") {
-            println(compilador.linhaErro(editor.text) )
+            //     println(compilador.linhaErro(editor.text))
 
             val rt = Runtime.getRuntime()
             if (!modificado) {
@@ -347,6 +375,8 @@ object Editor extends SimpleSwingApplication {
         contents += new Separator
         contents += itemSalvar
         contents += itemSalvarComo
+        contents += itemImprimir
+        contents += new Separator
         contents += executar
         contents += new Separator
         contents += itemSair
@@ -538,7 +568,7 @@ object Sobre extends Frame {
     text = """<html><body><h1>Editor Potigol</h1>
              |<p>
              |Versão: 0.9.4<br/>
-             |05/08/2015
+             |15/08/2015
              |<p>
              |(c) Copyright Leonardo Lucena, 2015.<p>
              |Visite: <a href="http://potigol.github.io">http://potigol.github.io</a>
