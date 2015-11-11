@@ -27,22 +27,23 @@ import br.edu.ifrn.potigol.parser.potigolParser.MS
 import br.edu.ifrn.potigol.parser.potigolParser.STRING
 
 object Editor extends SimpleSwingApplication {
-  //  System.setErr(new java.io.PrintStream(new java.io.OutputStream() {
-  //    override def write(i: Int) {}
-  //  }))
+  System.setErr(new java.io.PrintStream(new java.io.OutputStream() {
+    override def write(i: Int) {}
+  }))
 
   val compilador = new br.edu.ifrn.potigol.Compilador(false)
   var arq: Option[String] = None
   var modificado = false
+  // val is = getClass().getResourceAsStream("/fonts/DejaVuSansMono.ttf")
   val fontname = "DejaVu Sans Mono"
-  var fonte = new java.awt.Font(fontname, Font.BOLD, 24)
+  var fonte = new java.awt.Font(fontname, Font.BOLD, 20)
   var corFrente = new Color(248, 248, 242)
   var corFundo = new Color(39, 40, 34)
   val undo = Stack[(String, Int)]()
 
   override def main(args: Array[String]) {
     super.main(args)
-    if (args.length > 0) {
+    if (args.length > 1) {
       arq = Some(args(1))
       modificado = false
     }
@@ -78,7 +79,7 @@ object Editor extends SimpleSwingApplication {
       enabled = false
       editable = false
       focusable = false
-      font = new java.awt.Font(fontname, Font.PLAIN, 24)
+      font = new java.awt.Font(fontname, Font.PLAIN, 20)
     }
     def ed = editor
     val editor = new TextPane() {
@@ -88,11 +89,9 @@ object Editor extends SimpleSwingApplication {
       background = corFundo
       foreground = corFrente
       font = fonte
-      text = """
-        |""".stripMargin('|')
+      text = "\n"
       caret.position = 0
     }
-
     contents = new scala.swing.ScrollPane() {
       contents = new BorderPanel() {
         layout(numeracao) = West
@@ -115,7 +114,7 @@ object Editor extends SimpleSwingApplication {
             numeracao.font = editor.font
           }
           iconTextGap = 20
-          peer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, ActionEvent.CTRL_MASK))
+          peer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, ActionEvent.CTRL_MASK))
         }
         val itemDiminuir = new MenuItem("Diminuir Fonte") {
           action = Action("Diminuir Fonte") {
@@ -125,10 +124,10 @@ object Editor extends SimpleSwingApplication {
             }
           }
           iconTextGap = 20
-          peer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, ActionEvent.CTRL_MASK))
+          peer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, ActionEvent.CTRL_MASK))
         }
 
-        val itemDesfazer = new MenuItem("Desfazer digitção") {
+        val itemDesfazer = new MenuItem("Desfazer digitação") {
           action = Action("Desfazer digitação") {
             if (!undo.isEmpty) {
               val ultimo = undo.pop
@@ -312,13 +311,13 @@ object Editor extends SimpleSwingApplication {
         }
         val itemImprimir = new MenuItem("Imprimir") {
           action = Action("Imprimir") {
-            val writer = new PrintWriter("print.html", "UTF-8")
+            val writer = new PrintWriter("c:/temp/print.html", "UTF-8")
             writer.print(ParserEditor.print(editor.text))
             writer.close()
             Css.save
             import java.awt.Desktop
             import java.net.URI
-            Desktop.getDesktop.browse(new URI("print.html"))
+            Desktop.getDesktop.browse(new URI("c:/temp/print.html"))
 
           }
           iconTextGap = 20
@@ -426,7 +425,7 @@ object Editor extends SimpleSwingApplication {
       case KeyTyped(_, a @ ('"' | '{' | '(' | '['), _, _) => {
         modificado = true
         val p = editor.caret.position
-        if (editor.text.drop(p).headOption == Some('"')) {
+        if (a == '"' && editor.text.drop(p).headOption == Some('"')) {
 
           editor.text = editor.text.take(p) + editor.text.drop(p + 1)
           editor.caret.position = p
@@ -440,7 +439,6 @@ object Editor extends SimpleSwingApplication {
       }
 
       case KeyReleased(_, Key.Enter, _, _) => {
-        modificado = true
         val p = editor.caret.position - 1
         val fim = editor.text.take(p)
         val linha = fim.drop(fim.lastIndexOf('\n') + 1)
@@ -477,10 +475,10 @@ object Editor extends SimpleSwingApplication {
           editor.caret.position = p + 1 + espacos
         }
         atualizar()
+
       }
 
       case KeyReleased(_, _, _, _) => {
-        modificado = true
         atualizar()
       }
     }
@@ -501,10 +499,19 @@ object Editor extends SimpleSwingApplication {
 
     def atualizar() {
       if (editor.text != texto) {
+        //    modificado = true
         texto = editor.text
         val y = editor.caret.position
-        colorir()
-        editor.caret.position = y
+
+        contents(0) match {
+          case p: scala.swing.ScrollPane =>
+            val a = p.verticalScrollBar.value
+            colorir()
+            editor.caret.position = y
+            editor.caret.dot = y
+            p.verticalScrollBar.value = a
+        }
+
         if (undo.isEmpty || texto != undo.top._1) {
           undo.push((texto, y))
         }
@@ -567,8 +574,8 @@ object Sobre extends Frame {
     contentType = "text/html"
     text = """<html><body><h1>Editor Potigol</h1>
              |<p>
-             |Versão: 0.9.4<br/>
-             |15/08/2015
+             |Versão: 0.9.5<br/>
+             |01/10/2015
              |<p>
              |(c) Copyright Leonardo Lucena, 2015.<p>
              |Visite: <a href="http://potigol.github.io">http://potigol.github.io</a>
