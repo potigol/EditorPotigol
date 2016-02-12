@@ -574,10 +574,10 @@ object Sobre extends Frame {
     contentType = "text/html"
     text = """<html><body><h1>Editor Potigol</h1>
              |<p>
-             |Versão: 0.9.5<br/>
-             |01/10/2015
+             |Versão: 0.9.6<br/>
+             |11/02/2016
              |<p>
-             |(c) Copyright Leonardo Lucena, 2015.<p>
+             |(c) Copyright Leonardo Lucena, 2016.<p>
              |Visite: <a href="http://potigol.github.io">http://potigol.github.io</a>
              |</body></html>""".stripMargin('|')
     font = new java.awt.Font("DejaVu Sans Mono", Font.BOLD, 14)
