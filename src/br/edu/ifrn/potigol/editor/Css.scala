@@ -33,17 +33,19 @@ pre {
   color:red;
 }
 
-.operador {
-  color:black;
-}
 
-.chave, .fim{
+.chave, .fim, .operador {
   color: purple;
   font-weight: bolder;
 }
 
+.ponto {
+  color: darkblue;
+  font-style: italic;
+}
+
 .texto{
-  color:orange;
+  color:darkgoldenrod;
 }
 
 .parametro{
@@ -55,7 +57,7 @@ pre {
 }"""
 
   def save {
-    val writer = new java.io.PrintWriter("potigol.css", "UTF-8")
+    val writer = new java.io.PrintWriter("c:\\temp\\potigol.css", "UTF-8")
     writer.print(css)
     writer.close()
   }

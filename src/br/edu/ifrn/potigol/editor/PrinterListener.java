@@ -256,7 +256,7 @@ public class PrinterListener extends potigolBaseListener {
 		String exp = getValue(ctx.expr());
 		String id = getValue(ctx.ID());
 		String exp1 = getValue(ctx.expr1());
-		String s = exp + "<span class='ponto'>.</span>" + id;
+		String s = exp + "<span class='ponto'>."+id+"</span>";
 		if (exp1 != null)
 			s += "<span class='parametros'>(</span>" + exp1
 					+ "<span class='parametros'>)</span>";
@@ -342,7 +342,7 @@ public class PrinterListener extends potigolBaseListener {
 	public void exitE_logico(E_logicoContext ctx) {
 		String exp1 = getValue(ctx.expr(0));
 		String exp2 = getValue(ctx.expr(1));
-		setValue(ctx, exp1 + "<span class='operando'> e </span>" + exp2);
+		setValue(ctx, exp1 + "<span class='operador'> e </span>" + exp2);
 	}
 
 	@Override
