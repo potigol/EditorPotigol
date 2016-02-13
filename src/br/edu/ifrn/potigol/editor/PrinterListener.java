@@ -109,11 +109,7 @@ public class PrinterListener extends potigolBaseListener {
 	@Override
 	public void exitLambda(LambdaContext ctx) {
 		String param = getValue(ctx.dcl1());
-
-		String corpo = "";
-		for (InstContext i : ctx.inst()) {
-			corpo += "\n" + getValue(i);
-		}
+		String corpo = getValue(ctx.inst());
 		String s = param + "<span class='lambda'> => </span>"
 				+ corpo.substring(1);
 		setValue(ctx, s);
@@ -256,7 +252,7 @@ public class PrinterListener extends potigolBaseListener {
 		String exp = getValue(ctx.expr());
 		String id = getValue(ctx.ID());
 		String exp1 = getValue(ctx.expr1());
-		String s = exp + "<span class='ponto'>."+id+"</span>";
+		String s = exp + "<span class='ponto'>." + id + "</span>";
 		if (exp1 != null)
 			s += "<span class='parametros'>(</span>" + exp1
 					+ "<span class='parametros'>)</span>";

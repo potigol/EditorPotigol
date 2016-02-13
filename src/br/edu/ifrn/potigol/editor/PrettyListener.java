@@ -103,11 +103,7 @@ public class PrettyListener extends potigolBaseListener {
 	@Override
 	public void exitLambda(LambdaContext ctx) {
 		String param = getValue(ctx.dcl1());
-
-		String corpo = "";
-		for (InstContext i : ctx.inst()) {
-			corpo += "\n" + getValue(i);
-		}
+		String corpo = getValue(ctx.inst());
 		String s = param + " => " + corpo.substring(1);
 		setValue(ctx, s);
 	}
