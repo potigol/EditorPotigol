@@ -136,7 +136,7 @@ public class PrettyListener extends potigolBaseListener {
 
 	@Override
 	public void exitTipo_tupla(Tipo_tuplaContext ctx) {
-		String s = "(" + getValue(ctx.tipo2()) + ")";
+		String s = "Tupla(" + getValue(ctx.tipo2()) + ")";
 		setValue(ctx, s);
 	}
 
@@ -375,8 +375,10 @@ public class PrettyListener extends potigolBaseListener {
 		String s = "";
 		for (InstContext i : ctx.inst()) {
 			s += "\n" + getValue(i);
+			s = s.replaceAll("\\n", "\n  ");
+			s = s.replaceAll("  \\|", "|");
 		}
-		setValue(ctx, s.replaceAll("\\n", "\n  "));
+		setValue(ctx, s);
 	}
 
 	@Override
@@ -574,7 +576,7 @@ public class PrettyListener extends potigolBaseListener {
 		for (String sns : senaose) {
 			s += sns + separador;
 		}
-//		s = s.substring(0, s.length() - 1);
+		// s = s.substring(0, s.length() - 1);
 		if (senao != null) {
 			s += senao + separador;
 		}
@@ -609,7 +611,7 @@ public class PrettyListener extends potigolBaseListener {
 	@Override
 	public void exitSenaose(SenaoseContext ctx) {
 		String s = "\nsenãose " + getValue(ctx.expr()) + getValue(ctx.entao());
-//				+ "\n";
+		// + "\n";
 		setValue(ctx, s);
 	}
 
@@ -649,7 +651,7 @@ public class PrettyListener extends potigolBaseListener {
 	@Override
 	public void exitTupla(TuplaContext ctx) {
 		String exp = getValue(ctx.expr2());
-		setValue(ctx, "(" + exp + ")");
+		setValue(ctx, "Tupla(" + exp + ")");
 	}
 
 	@Override

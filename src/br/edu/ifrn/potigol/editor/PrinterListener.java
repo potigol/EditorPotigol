@@ -397,8 +397,10 @@ public class PrinterListener extends potigolBaseListener {
 		String s = "";
 		for (InstContext i : ctx.inst()) {
 			s += "\n" + getValue(i);
+			s = s.replaceAll("\\n", "\n  ");
+			s = s.replaceAll("  \\|", "|");
 		}
-		setValue(ctx, s.replaceAll("\\n", "\n  "));
+		setValue(ctx, s);
 	}
 
 	@Override
