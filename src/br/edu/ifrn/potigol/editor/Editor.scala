@@ -25,6 +25,7 @@ import br.edu.ifrn.potigol.parser.potigolParser.ID
 import br.edu.ifrn.potigol.parser.potigolParser.INT
 import br.edu.ifrn.potigol.parser.potigolParser.MS
 import br.edu.ifrn.potigol.parser.potigolParser.STRING
+import javax.swing.text.Caret
 
 object Editor extends SimpleSwingApplication {
   System.setErr(new java.io.PrintStream(new java.io.OutputStream() {
@@ -97,6 +98,7 @@ object Editor extends SimpleSwingApplication {
         layout(numeracao) = West
         layout(editor) = Center
       }
+
     }
 
     val arquivo = new FileChooser() {
@@ -507,9 +509,19 @@ object Editor extends SimpleSwingApplication {
           case p: scala.swing.ScrollPane =>
             val a = p.verticalScrollBar.value
             colorir()
+//            p.verticalScrollBar.value = a
+            editor.caret.position = y
+//            editor.caret.position = y-1
+//                     editor.caret.position = y+1
+          /*  p.peer.updateUI()
+            p.peer.repaint()
+            p.verticalScrollBar.value = a
             editor.caret.position = y
             editor.caret.dot = y
-            p.verticalScrollBar.value = a
+            editor.repaint()
+            p.peer.setLocation(1, 1)
+            p.peer.getVerticalScrollBar.setValue(10)
+            println(p.verticalScrollBar.value)*/
         }
 
         if (undo.isEmpty || texto != undo.top._1) {
@@ -542,7 +554,7 @@ object Editor extends SimpleSwingApplication {
     }
     if (arq.isDefined) {
       editor.text = scala.io.Source.fromFile(arq.get, "utf-8").getLines.mkString("\n")
-      atualizar()
+      // atualizar()
     }
   }
 
@@ -574,8 +586,8 @@ object Sobre extends Frame {
     contentType = "text/html"
     text = """<html><body><h1>Editor Potigol</h1>
              |<p>
-             |Versão: 0.9.6<br/>
-             |11/02/2016
+             |Versão: 0.9.7<br/>
+             |04/03/2016
              |<p>
              |(c) Copyright Leonardo Lucena, 2016.<p>
              |Visite: <a href="http://potigol.github.io">http://potigol.github.io</a>

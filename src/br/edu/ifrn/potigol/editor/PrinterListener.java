@@ -144,7 +144,7 @@ public class PrinterListener extends potigolBaseListener {
 
 	@Override
 	public void exitTipo_tupla(Tipo_tuplaContext ctx) {
-		String s = "<span class='tupla'>(</span>" + getValue(ctx.tipo2())
+		String s = "<span class='tupla'>Tupla(</span>" + getValue(ctx.tipo2())
 				+ "<span class='tupla'>)</span>";
 		setValue(ctx, s);
 	}
@@ -396,9 +396,11 @@ public class PrinterListener extends potigolBaseListener {
 	public void exitExprlist(ExprlistContext ctx) {
 		String s = "";
 		for (InstContext i : ctx.inst()) {
-			s += "\n" + getValue(i);
-			s = s.replaceAll("\\n", "\n  ");
-			s = s.replaceAll("  \\|", "|");
+			String r = getValue(i);
+			r = "\n" + r;
+			r = r.replaceAll("\\n", "\n  ");
+			r = r.replaceAll("  \\|", "|");
+			s += r;
 		}
 		setValue(ctx, s);
 	}
@@ -688,7 +690,7 @@ public class PrinterListener extends potigolBaseListener {
 	@Override
 	public void exitTupla(TuplaContext ctx) {
 		String exp = getValue(ctx.expr2());
-		setValue(ctx, "(" + exp + ")");
+		setValue(ctx, "Tupla(" + exp + ")");
 	}
 
 	@Override
