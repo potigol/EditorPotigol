@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/eb5c6629385f4552822341040c88cf37)](https://www.codacy.com/app/Potigol/EditorPotigol?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=potigol/EditorPotigol&amp;utm_campaign=Badge_Grade)
+
 # EditorPotigol
 Editor da Linguagem Potigol
 
