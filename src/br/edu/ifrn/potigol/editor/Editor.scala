@@ -32,12 +32,27 @@ object Editor extends SimpleSwingApplication {
     override def write(i: Int) {}
   }))
 
+  val tipos = List("Inteiro", "Real", "Texto", "Lógico", "Logico")
+  val metodos = List("inverta", "cabeça", "ordene", "Lista", "Matriz", "Cubo",
+    "inteiro", "arredonde", "texto", "real", "tamanho", "posição", "posiçao",
+    "posicão", "posicao", "contém", "contem", "maiúsculo", "maiusculo",
+    "minúsculo", "minusculo", "inverta", "divida", "lista", "cabeça", "cabeca",
+    "cauda", "último", "ultimo", "pegue", "descarte", "selecione", "mapeie",
+    "descarte_enquanto", "pegue_enquanto", "ordene", "junte", "insira",
+    "remova", "mutável", "mutavel", "imutável", "imutavel", "vazia", "injete",
+    "primeiro", "segundo", "terceiro", "quarto", "quinto", "sexto", "sétimo",
+    "setimo", "oitavo", "nono", "décimo", "decimo")
+  val funcoes = List("leia_inteiro", "leia_inteiros", "leia_real", "leia_reais",
+    "leia_texto", "leia_textos", "sen", "cos", "tg", "aleatório", "aleatorio",
+    "arcsen", "arccos", "arctg", "abs", "raiz", "log", "log10")
+
   val compilador = new br.edu.ifrn.potigol.Compilador(false)
   var arq: Option[String] = None
   var modificado = false
-  // val is = getClass().getResourceAsStream("/fonts/DejaVuSansMono.ttf")
-  val fontname = "DejaVu Sans Mono"
-  var fonte = new java.awt.Font(fontname, Font.BOLD, 20)
+  val is = getClass().getResource("/fonts/DejaVuSansMono.ttf")
+  // val fontname = "DejaVu Sans Mono"
+  val fonte = Font.createFont(Font.TRUETYPE_FONT, is.openStream()).deriveFont(Font.BOLD, 20);
+  //  var fonte = new java.awt.Font(fontname, Font.BOLD, 20)
   var corFrente = new Color(248, 248, 242)
   var corFundo = new Color(39, 40, 34)
   val undo = Stack[(String, Int)]()
@@ -80,7 +95,8 @@ object Editor extends SimpleSwingApplication {
       enabled = false
       editable = false
       focusable = false
-      font = new java.awt.Font(fontname, Font.PLAIN, 20)
+      font = Font.createFont(Font.TRUETYPE_FONT, is.openStream()).deriveFont(Font.BOLD, 20);
+      //new java.awt.Font(fontname, Font.PLAIN, 20)
     }
     def ed = editor
     val editor = new TextPane() {
@@ -112,7 +128,8 @@ object Editor extends SimpleSwingApplication {
         peer.setMnemonic('E')
         val itemAumentar = new MenuItem("Aumentar Fonte") {
           action = Action("Aumentar Fonte") {
-            editor.font = new java.awt.Font(fontname, Font.BOLD, editor.font.getSize() + 2)
+            editor.font = Font.createFont(Font.TRUETYPE_FONT, is.openStream()).deriveFont(Font.BOLD, editor.font.getSize() + 2);
+            //editor.font = new java.awt.Font(fontname, Font.BOLD, editor.font.getSize() + 2)
             numeracao.font = editor.font
           }
           iconTextGap = 20
@@ -121,7 +138,8 @@ object Editor extends SimpleSwingApplication {
         val itemDiminuir = new MenuItem("Diminuir Fonte") {
           action = Action("Diminuir Fonte") {
             if (editor.font.getSize() > 2) {
-              editor.font = new java.awt.Font(fontname, Font.BOLD, editor.font.getSize() - 2)
+              editor.font = Font.createFont(Font.TRUETYPE_FONT, is.openStream()).deriveFont(Font.BOLD, editor.font.getSize() - 2);
+              // editor.font = new java.awt.Font(fontname, Font.BOLD, editor.font.getSize() - 2)
               numeracao.font = editor.font
             }
           }
@@ -509,10 +527,10 @@ object Editor extends SimpleSwingApplication {
           case p: scala.swing.ScrollPane =>
             val a = p.verticalScrollBar.value
             colorir()
-//            p.verticalScrollBar.value = a
+            //            p.verticalScrollBar.value = a
             editor.caret.position = y
-//            editor.caret.position = y-1
-//                     editor.caret.position = y+1
+          //            editor.caret.position = y-1
+          //                     editor.caret.position = y+1
           /*  p.peer.updateUI()
             p.peer.repaint()
             p.verticalScrollBar.value = a
@@ -543,11 +561,14 @@ object Editor extends SimpleSwingApplication {
         val b = elem.getStopIndex - a + 1
         import br.edu.ifrn.potigol.parser.potigolParser._
         val s = elem.getType match {
-          case ID                            => config.bege
+          case ID if tipos.contains(elem.getText) => config.cyan
+          case ID if a > 0 && editor.text.charAt(a - 1) == '.' && metodos.contains(elem.getText) => config.cyan
+          case ID if funcoes.contains(elem.getText) => config.cyan
+          case ID => config.bege
           case INT | FLOAT | BOOLEANO | CHAR => config.azul
-          case STRING | BS | MS | ES         => config.amarelo
-          case COMMENT                       => config.vermelho
-          case _                             => config.vermelho
+          case STRING | BS | MS | ES => config.amarelo
+          case COMMENT => config.vermelho
+          case _ => config.vermelho
         }
         styledDocument.setCharacterAttributes(a, b, s, true)
       }
@@ -561,16 +582,18 @@ object Editor extends SimpleSwingApplication {
   object config {
     import javax.swing.text.StyleConstants._
     case class Cor(r: Int, g: Int, b: Int) extends Color(r, g, b)
-    case class Atributos(cor: Color) extends SimpleAttributeSet {
+    case class Atributos(cor: Color, italico: Boolean = false) extends SimpleAttributeSet {
       setFontFamily(this, "DejaVu Sans Mono")
       setForeground(this, cor)
       setBold(this, false)
+      setItalic(this, italico)
     }
     val amarelo = Atributos(Cor(230, 219, 116))
     val vermelho = Atributos(Cor(249, 38, 114))
     val cinza = Atributos(Cor(118, 113, 94))
     val azul = Atributos(Cor(174, 129, 255))
     val bege = Atributos(Cor(248, 248, 242))
+    val cyan = Atributos(Cor(102, 217, 206), italico = true)
   }
 }
 
@@ -586,12 +609,13 @@ object Sobre extends Frame {
     contentType = "text/html"
     text = """<html><body><h1>Editor Potigol</h1>
              |<p>
-             |Versão: 0.9.7<br/>
-             |04/03/2016
+             |Versão: 0.9.8<br/>
+             |26/09/2016
              |<p>
              |(c) Copyright Leonardo Lucena, 2016.<p>
              |Visite: <a href="http://potigol.github.io">http://potigol.github.io</a>
              |</body></html>""".stripMargin('|')
-    font = new java.awt.Font("DejaVu Sans Mono", Font.BOLD, 14)
+    font = Font.createFont(Font.TRUETYPE_FONT, Editor.is.openStream()).deriveFont(Font.BOLD, 14);
+    //new java.awt.Font("DejaVu Sans Mono", Font.BOLD, 14)
   }
 }
