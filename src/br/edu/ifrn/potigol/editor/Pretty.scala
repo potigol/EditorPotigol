@@ -56,6 +56,7 @@ object Pretty {
       if (l == "fim" && !l.startsWith("se")) { tab = tab - 2 }
       if (l.endsWith("senão")) { tab = tab - 2 }
       if (l.endsWith("senao")) { tab = tab - 2 }
+      if (l.startsWith("tipo")) { tab = tab + 2 }
       val x = (" " * tab) + l
       if (l.endsWith("faça")) { tab = tab + 2 }
       if (l.endsWith("faca")) { tab = tab + 2 }

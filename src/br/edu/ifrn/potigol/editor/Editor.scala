@@ -26,6 +26,9 @@ import br.edu.ifrn.potigol.parser.potigolParser.INT
 import br.edu.ifrn.potigol.parser.potigolParser.MS
 import br.edu.ifrn.potigol.parser.potigolParser.STRING
 import javax.swing.text.Caret
+import scala.swing.ScrollPane
+import javax.swing.text.DefaultCaret
+import javafx.scene.control.ScrollPane.ScrollBarPolicy
 
 object Editor extends SimpleSwingApplication {
   System.setErr(new java.io.PrintStream(new java.io.OutputStream() {
@@ -114,7 +117,6 @@ object Editor extends SimpleSwingApplication {
         layout(numeracao) = West
         layout(editor) = Center
       }
-
     }
 
     val arquivo = new FileChooser() {
@@ -458,45 +460,50 @@ object Editor extends SimpleSwingApplication {
         atualizar
       }
 
-      case KeyReleased(_, Key.Enter, _, _) => {
-        val p = editor.caret.position - 1
-        val fim = editor.text.take(p)
-        val linha = fim.drop(fim.lastIndexOf('\n') + 1)
-        val espacos = linha.prefixLength(_ == ' ')
+      case KeyReleased(_, Key.Enter, _, _) =>
+        {
+          val p = editor.caret.position - 1
+          val p1 = editor.caret.dot
+          val fim = editor.text.take(p)
+          val linha = fim.drop(fim.lastIndexOf('\n') + 1)
+          val espacos = linha.prefixLength(_ == ' ')
 
-        if (fim.endsWith("senão") ||
-          fim.endsWith("senao")) {
-          editor.text = editor.text.take(p) + "\n  " + " " * espacos + editor.text.drop(p + 1)
-          editor.caret.position = p + 3 + espacos
-        }
-        else if (fim.endsWith("faça") ||
-          fim.endsWith("faca") ||
-          fim.endsWith("então") ||
-          fim.endsWith("entao")) {
-          editor.text = editor.text.take(p) + "\n  " + " " * espacos + "\n" + " " * espacos + "fim" + editor.text.drop(p + 1)
-          editor.caret.position = p + 3 + espacos
-        }
-        else if (linha.trim.startsWith("escolha")) {
-          editor.text = editor.text.take(p) + "\n  " + " " * espacos + "caso => \n" + " " * espacos + "fim" + editor.text.drop(p + 1)
-          editor.caret.position = p + 8 + espacos
-        }
-        else // String multilinha
-        if (editor.text.drop(p + 1).startsWith("\"") ||
-          editor.text.drop(p + 1).startsWith("|")) {
-          val c = editor.text.drop(p + 1).head
-          val u = linha.lastIndexOf("\"") + linha.lastIndexOf("|")
-          editor.text = editor.text.take(p) + "\n" + " " * (u + 1 + (if (c == '"') 0 else 1)) + "|" + editor.text.drop(p + 1)
-          editor.caret.position = p + 3 + u
-        }
-        else {
-          linha.prefixLength(_ == ' ')
+          if (fim.endsWith("senão") ||
+            fim.endsWith("senao")) {
+            editor.text = editor.text.take(p) + "\n  " + " " * espacos + editor.text.drop(p + 1)
+            editor.caret.position = p + 3 + espacos
+          }
+          else if (fim.endsWith("faça") ||
+            fim.endsWith("faca") ||
+            fim.endsWith("então") ||
+            fim.endsWith("entao")) {
+            editor.text = editor.text.take(p) + "\n  " + " " * espacos + "\n" + " " * espacos + "fim" + editor.text.drop(p + 1)
+            editor.caret.position = p + 3 + espacos
+          }
+          else if (linha.trim.startsWith("escolha")) {
+            editor.text = editor.text.take(p) + "\n  " + " " * espacos + "caso => \n" + " " * espacos + "fim" + editor.text.drop(p + 1)
+            editor.caret.position = p + 8 + espacos
+          }
+          else // String multilinha
+          if (editor.text.drop(p + 1).startsWith("\"") ||
+            editor.text.drop(p + 1).startsWith("|")) {
+            val c = editor.text.drop(p + 1).head
+            val u = linha.lastIndexOf("\"") + linha.lastIndexOf("|")
+            editor.text = editor.text.take(p) + "\n" + " " * (u + 1 + (if (c == '"') 0 else 1)) + "|" + editor.text.drop(p + 1)
+            editor.caret.position = p + 3 + u
+          }
+          else {
+            linha.prefixLength(_ == ' ')
 
-          editor.text = editor.text.take(p) + "\n" + " " * espacos + editor.text.drop(p + 1)
-          editor.caret.position = p + 1 + espacos
+            editor.text = editor.text.take(p) + "\n" + " " * espacos + editor.text.drop(p + 1)
+            editor.caret.position = p + 1 + espacos
+          }
+          atualizar()
+          // editor.location.setLocation(0, p1)
+          //  contents(0).asInstanceOf[ScrollPane].peer.getVerticalScrollBar.setValue(p1.toInt)
+          editor.caret.moveDot(p1.toInt)
+          println(contents(0).asInstanceOf[ScrollPane].verticalScrollBar.value)
         }
-        atualizar()
-
-      }
 
       case KeyReleased(_, _, _, _) => {
         atualizar()
@@ -553,6 +560,7 @@ object Editor extends SimpleSwingApplication {
       if (linhas != numeracao.text.filter(_ == '\n').length + 1) {
         numeracao.text = (for (i <- 1 to linhas) yield f"$i%3d").toList.mkString("\n")
       }
+
       val elementos = ParserEditor.parse(editor.text)
       val styledDocument = editor.styledDocument
       styledDocument.setCharacterAttributes(0, 10000, config.cinza, true)
@@ -561,18 +569,20 @@ object Editor extends SimpleSwingApplication {
         val b = elem.getStopIndex - a + 1
         import br.edu.ifrn.potigol.parser.potigolParser._
         val s = elem.getType match {
-          case ID if tipos.contains(elem.getText) => config.cyan
-          case ID if a > 0 && editor.text.charAt(a - 1) == '.' && metodos.contains(elem.getText) => config.cyan
-          case ID if funcoes.contains(elem.getText) => config.cyan
-          case ID => config.bege
           case INT | FLOAT | BOOLEANO | CHAR => config.azul
           case STRING | BS | MS | ES => config.amarelo
           case COMMENT => config.vermelho
+          case ID if tipos.contains(elem.getText) => config.cyan
+          case ID if a > 0 && editor.text.charAt(a - 1) == '.' && metodos.contains(elem.getText) => config.cyan
+          case ID if funcoes.contains(elem.getText) => config.cyan
+          case ID if List("verdadeiro", "falso").contains(elem.getText) => config.azul
+          case ID => config.bege
           case _ => config.vermelho
         }
         styledDocument.setCharacterAttributes(a, b, s, true)
       }
     }
+
     if (arq.isDefined) {
       editor.text = scala.io.Source.fromFile(arq.get, "utf-8").getLines.mkString("\n")
       // atualizar()
@@ -609,10 +619,10 @@ object Sobre extends Frame {
     contentType = "text/html"
     text = """<html><body><h1>Editor Potigol</h1>
              |<p>
-             |Versão: 0.9.8<br/>
-             |26/09/2016
+             |Versão: 0.9.10<br/>
+             |22/02/2017
              |<p>
-             |(c) Copyright Leonardo Lucena, 2016.<p>
+             |(c) Copyright Leonardo Lucena, 2015-2017.<p>
              |Visite: <a href="http://potigol.github.io">http://potigol.github.io</a>
              |</body></html>""".stripMargin('|')
     font = Font.createFont(Font.TRUETYPE_FONT, Editor.is.openStream()).deriveFont(Font.BOLD, 14);
