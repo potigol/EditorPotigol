@@ -30,7 +30,7 @@ package br.edu.ifrn.potigol.editor;
  *
  * @author Leonardo Lucena (leonardo.lucena@escolar.ifrn.edu.br)
  */
- 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,7 +91,7 @@ public class PrettyListener extends potigolBaseListener {
 
     @Override
     public void exitSet_vetor(Set_vetorContext ctx) {
-        String id = getValue(ctx.ID());
+        String id = getValue(ctx.qualid());
         String s = id;
         for (ExprContext e : ctx.expr().subList(0, ctx.expr().size() - 1))
             s += "[" + getValue(e) + "]";
@@ -136,7 +136,7 @@ public class PrettyListener extends potigolBaseListener {
 
     @Override
     public void exitTipo_tupla(Tipo_tuplaContext ctx) {
-        String s = "Tupla(" + getValue(ctx.tipo2()) + ")";
+        String s = "(" + getValue(ctx.tipo2()) + ")";
         setValue(ctx, s);
     }
 
@@ -208,7 +208,6 @@ public class PrettyListener extends potigolBaseListener {
         for (int i = 2; i < ctx.children.size() - 1; i++) {
             ParseTree d = ctx.children.get(i);
             s += "  " + getValue(d).replaceAll("\n", "\n  ") + "\n";
-           
         }
         s += "fim";
         setValue(ctx, s);
@@ -216,7 +215,7 @@ public class PrettyListener extends potigolBaseListener {
 
     @Override
     public void exitAtrib_multipla(Atrib_multiplaContext ctx) {
-        String id = getValue(ctx.id2());
+        String id = getValue(ctx.qualid2());
         String exp = getValue(ctx.expr2());
         String s = id + " := " + exp;
         setValue(ctx, s);
@@ -224,7 +223,7 @@ public class PrettyListener extends potigolBaseListener {
 
     @Override
     public void exitAtrib_simples(Atrib_simplesContext ctx) {
-        String id = getValue(ctx.id1());
+        String id = getValue(ctx.qualid1());
         String exp = getValue(ctx.expr());
         String s = id + " := " + exp;
         setValue(ctx, s);
@@ -232,7 +231,9 @@ public class PrettyListener extends potigolBaseListener {
 
     @Override
     public void exitChamada_funcao(Chamada_funcaoContext ctx) {
-        setValue(ctx, getValue(ctx.expr()) + "(" + getValue(ctx.expr1()) + ")");
+        final String param = getValue(ctx.expr1());
+        setValue(ctx, getValue(ctx.expr()) + "(" + (param == null ? "" : param)
+                + ")");
     }
 
     @Override
@@ -449,6 +450,34 @@ public class PrettyListener extends potigolBaseListener {
     }
 
     @Override
+    public void exitQualid(QualidContext ctx) {
+        List<String> a = new ArrayList<String>();
+        for (TerminalNode id : ctx.ID()) {
+            a.add(getValue(id));
+        }
+        qualids2String(ctx, a);
+    }
+
+    @Override
+    public void exitQualid1(Qualid1Context ctx) {
+        List<String> a = new ArrayList<String>();
+        for (QualidContext id : ctx.qualid()) {
+            a.add(getValue(id));
+        }
+        ids2String(ctx, a);
+    }
+
+    @Override
+    public void exitQualid2(Qualid2Context ctx) {
+        List<String> a = new ArrayList<String>();
+        for (QualidContext id : ctx.qualid()) {
+            a.add(getValue(id));
+        }
+        ids2String(ctx, a);
+    }
+
+    
+    @Override
     public void exitImprima(ImprimaContext ctx) {
         setValue(ctx, "imprima " + getValue(ctx.expr()));
     }
@@ -628,6 +657,11 @@ public class PrettyListener extends potigolBaseListener {
     }
 
     @Override
+    public void exitRetorne(RetorneContext ctx) {
+        setValue(ctx, "retorne " + getValue(ctx.expr()));
+    }
+    
+    @Override
     public void exitSoma_sub(Soma_subContext ctx) {
         String exp1 = getValue(ctx.expr(0));
         String exp2 = getValue(ctx.expr(1));
@@ -664,7 +698,7 @@ public class PrettyListener extends potigolBaseListener {
     @Override
     public void exitTupla(TuplaContext ctx) {
         String exp = getValue(ctx.expr2());
-        setValue(ctx, "Tupla(" + exp + ")");
+        setValue(ctx, "(" + exp + ")");
     }
 
     @Override
@@ -695,6 +729,17 @@ public class PrettyListener extends potigolBaseListener {
         }
         for (int i = 1; i < a.size(); i++) {
             s += ", " + a.get(i);
+        }
+        setValue(ctx, s);
+    }
+    
+    private void qualids2String(RuleContext ctx, List<String> a) {
+        String s = "";
+        if (a.size() > 0) {
+            s = a.get(0);
+        }
+        for (int i = 1; i < a.size(); i++) {
+            s += "." + a.get(i);
         }
         setValue(ctx, s);
     }

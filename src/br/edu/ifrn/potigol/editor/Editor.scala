@@ -29,6 +29,7 @@ import javax.swing.text.Caret
 import scala.swing.ScrollPane
 import javax.swing.text.DefaultCaret
 import javafx.scene.control.ScrollPane.ScrollBarPolicy
+import java.awt.Robot
 
 object Editor extends SimpleSwingApplication {
   System.setErr(new java.io.PrintStream(new java.io.OutputStream() {
@@ -59,6 +60,7 @@ object Editor extends SimpleSwingApplication {
   var corFrente = new Color(248, 248, 242)
   var corFundo = new Color(39, 40, 34)
   val undo = Stack[(String, Int)]()
+  val robot = new Robot()
 
   override def main(args: Array[String]) {
     super.main(args)
@@ -333,13 +335,13 @@ object Editor extends SimpleSwingApplication {
         }
         val itemImprimir = new MenuItem("Imprimir") {
           action = Action("Imprimir") {
-            val writer = new PrintWriter("c:/temp/print.html", "UTF-8")
+            val writer = new PrintWriter("print.html", "UTF-8")
             writer.print(ParserEditor.print(editor.text))
             writer.close()
             Css.save
             import java.awt.Desktop
             import java.net.URI
-            Desktop.getDesktop.browse(new URI("c:/temp/print.html"))
+            Desktop.getDesktop.browse(new URI("print.html"))
 
           }
           iconTextGap = 20
@@ -467,13 +469,14 @@ object Editor extends SimpleSwingApplication {
           val fim = editor.text.take(p)
           val linha = fim.drop(fim.lastIndexOf('\n') + 1)
           val espacos = linha.prefixLength(_ == ' ')
-
+          val loc = contents(0).asInstanceOf[ScrollPane].verticalScrollBar.location;
           if (fim.endsWith("senão") ||
             fim.endsWith("senao")) {
             editor.text = editor.text.take(p) + "\n  " + " " * espacos + editor.text.drop(p + 1)
             editor.caret.position = p + 3 + espacos
           }
           else if (fim.endsWith("faça") ||
+            linha.trim.startsWith("tipo") ||
             fim.endsWith("faca") ||
             fim.endsWith("então") ||
             fim.endsWith("entao")) {
@@ -498,11 +501,18 @@ object Editor extends SimpleSwingApplication {
             editor.text = editor.text.take(p) + "\n" + " " * espacos + editor.text.drop(p + 1)
             editor.caret.position = p + 1 + espacos
           }
+          robot.mouseWheel(-100);
+
           atualizar()
           // editor.location.setLocation(0, p1)
           //  contents(0).asInstanceOf[ScrollPane].peer.getVerticalScrollBar.setValue(p1.toInt)
-          editor.caret.moveDot(p1.toInt)
-          println(contents(0).asInstanceOf[ScrollPane].verticalScrollBar.value)
+          // editor.caret.moveDot(p1.toInt)
+          //    robot.keyPress(KeyEvent.VK_SPACE);
+          //    robot.keyPress(KeyEvent.VK_BACK_SPACE);
+          robot.mouseWheel(-100);
+          robot.keyPress(KeyEvent.VK_SPACE);
+         // robot.keyPress(KeyEvent.VK_BACK_SPACE);
+          robot.mouseWheel(-100);
         }
 
       case KeyReleased(_, _, _, _) => {
@@ -575,7 +585,7 @@ object Editor extends SimpleSwingApplication {
           case ID if tipos.contains(elem.getText) => config.cyan
           case ID if a > 0 && editor.text.charAt(a - 1) == '.' && metodos.contains(elem.getText) => config.cyan
           case ID if funcoes.contains(elem.getText) => config.cyan
-          case ID if List("verdadeiro", "falso").contains(elem.getText) => config.azul
+          case ID if List("verdadeiro", "falso", "isto").contains(elem.getText) => config.azul
           case ID => config.bege
           case _ => config.vermelho
         }
@@ -619,8 +629,8 @@ object Sobre extends Frame {
     contentType = "text/html"
     text = """<html><body><h1>Editor Potigol</h1>
              |<p>
-             |Versão: 0.9.10<br/>
-             |22/02/2017
+             |Versão: 0.9.13<br/>
+             |13/09/2017
              |<p>
              |(c) Copyright Leonardo Lucena, 2015-2017.<p>
              |Visite: <a href="http://potigol.github.io">http://potigol.github.io</a>

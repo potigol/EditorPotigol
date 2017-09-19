@@ -2,7 +2,7 @@ package br.edu.ifrn.potigol.editor;
 
 /*
  *  Potigol
- *  Copyright (C) 2015 by Leonardo Lucena
+ *  Copyright (C) 2015-2017 by Leonardo Lucena
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -96,7 +96,7 @@ public class PrinterListener extends potigolBaseListener {
 
 	@Override
 	public void exitSet_vetor(Set_vetorContext ctx) {
-		String id = getValue(ctx.ID());
+		String id = getValue(ctx.qualid());
 		String s = id;
 		for (ExprContext e : ctx.expr().subList(0, ctx.expr().size() - 1))
 			s += "<span class='colchete'>[</span>" + getValue(e)
@@ -144,7 +144,7 @@ public class PrinterListener extends potigolBaseListener {
 
 	@Override
 	public void exitTipo_tupla(Tipo_tuplaContext ctx) {
-		String s = "<span class='tupla'>Tupla(</span>" + getValue(ctx.tipo2())
+		String s = "<span class='tupla'>(</span>" + getValue(ctx.tipo2())
 				+ "<span class='tupla'>)</span>";
 		setValue(ctx, s);
 	}
@@ -226,7 +226,7 @@ public class PrinterListener extends potigolBaseListener {
 
 	@Override
 	public void exitAtrib_multipla(Atrib_multiplaContext ctx) {
-		String id = getValue(ctx.id2());
+		String id = getValue(ctx.qualid2());
 		String exp = getValue(ctx.expr2());
 		String s = id + "<span class='atribuicao'> := </span>" + exp;
 		setValue(ctx, s);
@@ -234,7 +234,7 @@ public class PrinterListener extends potigolBaseListener {
 
 	@Override
 	public void exitAtrib_simples(Atrib_simplesContext ctx) {
-		String id = getValue(ctx.id1());
+		String id = getValue(ctx.qualid1());
 		String exp = getValue(ctx.expr());
 		String s = id + "<span class='atribuicao'> := </span>" + exp;
 		setValue(ctx, s);
@@ -691,7 +691,7 @@ public class PrinterListener extends potigolBaseListener {
 	@Override
 	public void exitTupla(TuplaContext ctx) {
 		String exp = getValue(ctx.expr2());
-		setValue(ctx, "Tupla(" + exp + ")");
+		setValue(ctx, "(" + exp + ")");
 	}
 
 	@Override

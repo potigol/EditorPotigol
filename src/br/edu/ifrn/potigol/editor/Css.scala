@@ -33,7 +33,6 @@ pre {
   color:red;
 }
 
-
 .chave, .fim, .operador {
   color: purple;
   font-weight: bolder;
