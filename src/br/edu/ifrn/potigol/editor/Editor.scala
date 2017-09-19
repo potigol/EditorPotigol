@@ -351,24 +351,21 @@ object Editor extends SimpleSwingApplication {
         val executar = new MenuItem("Executar") {
           iconTextGap = 20
           action = Action("Executar") {
-            //     println(compilador.linhaErro(editor.text))
-
             val rt = Runtime.getRuntime()
             if (!modificado) {
-              rt.exec("cmd.exe /T:1F /c start exec.bat " + arq.get)
-              //              Seq("cmd","dir") lines
-              //              Seq("cmd start /k cmd dir")
-              //             Seq("cmd", "dir").!
-              //             val x = s"""cmd start "Potigol" /W dir""" lineStream;
-              //             println(x)
+              if (System.getProperty("os.name").startsWith("Windows")) {
+                rt.exec("cmd.exe /T:1F /c start exec.bat " + arq.get)
+              }
+              else { rt.exec("./exec.sh " + arq.get) }
             }
             else {
               salvar {
                 itemSalvar.action.apply()
               } {
-                rt.exec("cmd.exe /t:1F /c start exec.bat " + arq.get)
-                //                s"%~dp0potigol.bat {arq.get}" lineStream
-                //                "ls" #| "grep .scala" #&& Seq("sh", "-c", "scalac *.scala") #|| "echo nothing found" lines
+                if (System.getProperty("os.name").startsWith("Windows")) {
+                  rt.exec("cmd.exe /T:1F /c start exec.bat " + arq.get)
+                }
+                else { rt.exec("./exec.sh " + arq.get) }
               }
             }
           }
@@ -504,14 +501,7 @@ object Editor extends SimpleSwingApplication {
           robot.mouseWheel(-100);
 
           atualizar()
-          // editor.location.setLocation(0, p1)
-          //  contents(0).asInstanceOf[ScrollPane].peer.getVerticalScrollBar.setValue(p1.toInt)
-          // editor.caret.moveDot(p1.toInt)
-          //    robot.keyPress(KeyEvent.VK_SPACE);
-          //    robot.keyPress(KeyEvent.VK_BACK_SPACE);
           robot.mouseWheel(-100);
-          robot.keyPress(KeyEvent.VK_SPACE);
-         // robot.keyPress(KeyEvent.VK_BACK_SPACE);
           robot.mouseWheel(-100);
         }
 
@@ -582,11 +572,12 @@ object Editor extends SimpleSwingApplication {
           case INT | FLOAT | BOOLEANO | CHAR => config.azul
           case STRING | BS | MS | ES => config.amarelo
           case COMMENT => config.vermelho
+          case ID if List("verdadeiro", "falso").contains(elem.getText) => config.azul
           case ID if tipos.contains(elem.getText) => config.cyan
           case ID if a > 0 && editor.text.charAt(a - 1) == '.' && metodos.contains(elem.getText) => config.cyan
           case ID if funcoes.contains(elem.getText) => config.cyan
-          case ID if List("verdadeiro", "falso", "isto").contains(elem.getText) => config.azul
           case ID => config.bege
+          case _ if elem.getText == "isto" => config.azul
           case _ => config.vermelho
         }
         styledDocument.setCharacterAttributes(a, b, s, true)
