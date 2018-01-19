@@ -620,10 +620,10 @@ object Sobre extends Frame {
     contentType = "text/html"
     text = """<html><body><h1>Editor Potigol</h1>
              |<p>
-             |Versão: 0.9.13<br/>
-             |13/09/2017
+             |Versão: 0.9.15<br/>
+             |19/01/2018
              |<p>
-             |(c) Copyright Leonardo Lucena, 2015-2017.<p>
+             |(c) Copyright Leonardo Lucena, 2015-2018.<p>
              |Visite: <a href="http://potigol.github.io">http://potigol.github.io</a>
              |</body></html>""".stripMargin('|')
     font = Font.createFont(Font.TRUETYPE_FONT, Editor.is.openStream()).deriveFont(Font.BOLD, 14);

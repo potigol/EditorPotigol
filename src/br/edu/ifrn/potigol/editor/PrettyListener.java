@@ -597,7 +597,7 @@ public class PrettyListener extends potigolBaseListener {
     @Override
     public void exitSe(SeContext ctx) {
         String entao = getValue(ctx.entao());
-        List<String> senaose = new ArrayList<>();
+        List<String> senaose = new ArrayList<String>();
         if (ctx.senaose() != null) {
             for (SenaoseContext sns : ctx.senaose()) {
                 senaose.add(getValue(sns));

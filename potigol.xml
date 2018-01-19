@@ -6,7 +6,7 @@
         <jar destfile="../PotigolANTLR/jar/epotigol.jar" encoding="UTF-8">
             <manifest>
                 <attribute name="Main-Class" value="br.edu.ifrn.potigol.editor.Editor"/>
-                <attribute name="Class-Path" value=". potigol.jar potigol_lib/antlr-runtime-4.5.jar potigol_lib/scala-swing.jar potigol_lib/scala-library.jar potigol_lib/scala-reflect.jar"/>
+                <attribute name="Class-Path" value=". potigol.jar potigol_lib/antlr-runtime-4.7.1.jar potigol_lib/scala-swing.jar potigol_lib/scala-library.jar potigol_lib/scala-reflect.jar"/>
             </manifest>
             <fileset dir="bin"/>
         </jar>
