@@ -9,7 +9,7 @@ import br.edu.ifrn.potigol.parser.potigolParser
 import br.edu.ifrn.potigol.Compilador
 import scala.util.Success
 
-object ParserEditor {
+object ParserEditor { 
   def parse(r: String, channel: Int = 0): List[Token] = {
     val input = CharStreams.fromString(r)
     val lexer = new potigolLexer(input)

@@ -81,7 +81,7 @@ object Editor extends SimpleSwingApplication {
 */
   def top = new MainFrame {
     import javax.imageio.ImageIO
-    val i = ImageIO.read(getClass().getResource("potigol.png"));
+    val i = ImageIO.read(getClass().getResource("/potigol.png"));
     iconImage = i
     this.location = new Point(200, 100)
     title = s"${arq.getOrElse("Sem nome")} - Potigol"
@@ -93,7 +93,8 @@ object Editor extends SimpleSwingApplication {
     }*/
 
     val numeracao = new TextPane() {
-      border = BorderFactory.createCompoundBorder(border,
+      border = BorderFactory.createCompoundBorder(
+        border,
         BorderFactory.createEmptyBorder(10, 10, 10, 10));
       background = new Color(56, 57, 49)
       foreground = new Color(170, 167, 149)
@@ -105,7 +106,8 @@ object Editor extends SimpleSwingApplication {
     }
     def ed = editor
     val editor = new TextPane() {
-      this.border = BorderFactory.createCompoundBorder(border,
+      this.border = BorderFactory.createCompoundBorder(
+        border,
         BorderFactory.createEmptyBorder(10, 10, 10, 10));
       caret.color = corFrente
       background = corFundo
@@ -615,15 +617,16 @@ object Sobre extends Frame {
   preferredSize.setSize(300, 200)
   this.location = new Point(400, 200)
   contents = new TextPane() {
-    border = BorderFactory.createCompoundBorder(border,
+    border = BorderFactory.createCompoundBorder(
+      border,
       BorderFactory.createEmptyBorder(0, 20, 20, 20));
     contentType = "text/html"
     text = """<html><body><h1>Editor Potigol</h1>
              |<p>
-             |Versão: 0.9.15<br/>
-             |19/01/2018
+             |Versão: 0.9.16<br/>
+             |21/03/2019
              |<p>
-             |(c) Copyright Leonardo Lucena, 2015-2018.<p>
+             |(c) Copyright Leonardo Lucena, 2015-2019.<p>
              |Visite: <a href="http://potigol.github.io">http://potigol.github.io</a>
              |</body></html>""".stripMargin('|')
     font = Font.createFont(Font.TRUETYPE_FONT, Editor.is.openStream()).deriveFont(Font.BOLD, 14);
