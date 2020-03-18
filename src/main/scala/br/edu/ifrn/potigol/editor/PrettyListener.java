@@ -2,7 +2,7 @@ package br.edu.ifrn.potigol.editor;
 
 /*
  *  Potigol
- *  Copyright (C) 2015 by Leonardo Lucena
+ *  Copyright (C) 2015-2019 by Leonardo Lucena
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -342,7 +342,7 @@ public class PrettyListener extends potigolBaseListener {
     @Override
     public void exitBloco(BlocoContext ctx) {
         String exp = getValue(ctx.exprlist());
-        String s = "faça" + exp + "\nfim";
+        String s = "fa\u00e7a" + exp + "\nfim";
         setValue(ctx, s);
     }
 
@@ -402,11 +402,11 @@ public class PrettyListener extends potigolBaseListener {
                 s = " em " + getValue(ctx.expr(0));
                 break;
             case 2:
-                s = " de " + getValue(ctx.expr(0)) + " até "
+                s = " de " + getValue(ctx.expr(0)) + " at\u00e9 "
                         + getValue(ctx.expr(1));
                 break;
             default:
-                s = " de " + getValue(ctx.expr(0)) + " até "
+                s = " de " + getValue(ctx.expr(0)) + " at\u00e9 "
                         + getValue(ctx.expr(1)) + " passo "
                         + getValue(ctx.expr(2));
                 break;
@@ -534,7 +534,7 @@ public class PrettyListener extends potigolBaseListener {
     @Override
     public void exitNao_logico(Nao_logicoContext ctx) {
         String exp = getValue(ctx.expr());
-        setValue(ctx, "não " + exp);
+        setValue(ctx, "n\u00e3o " + exp);
     }
 
     @Override
@@ -630,9 +630,9 @@ public class PrettyListener extends potigolBaseListener {
         String exp = getValue(ctx.exprlist());
         String s;
         if (exp.contains("\n")) {
-            s = " então" + exp;
+            s = " ent\u00e3o" + exp;
         } else {
-            s = " então " + exp + " ";
+            s = " ent\u00e3o " + exp + " ";
         }
         setValue(ctx, s);
     }
@@ -642,16 +642,16 @@ public class PrettyListener extends potigolBaseListener {
         String exp = getValue(ctx.exprlist());
         String s;
         if (exp.contains("\n")) {
-            s = "\nsenão" + exp;
+            s = "\nsen\u00e3o" + exp;
         } else {
-            s = "\nsenão" + exp;
+            s = "\nsen\u00e3o" + exp;
         }
         setValue(ctx, s);
     }
 
     @Override
     public void exitSenaose(SenaoseContext ctx) {
-        String s = "\nsenãose " + getValue(ctx.expr()) + getValue(ctx.entao());
+        String s = "\nsen\u00e3ose " + getValue(ctx.expr()) + getValue(ctx.entao());
         // + "\n";
         setValue(ctx, s);
     }

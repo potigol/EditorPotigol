@@ -321,6 +321,7 @@ object Editor extends SimpleSwingApplication {
           action = Action("Salvar Como ...") {
             val res = arquivo.showSaveDialog(editor)
             res match {
+              case FileChooser.Result.Cancel =>
               case FileChooser.Result.Approve =>
                 arq = Some(arquivo.selectedFile.getPath)
                 if (!arq.get.endsWith(".poti")) arq = Some(arq.get + ".poti")
@@ -624,7 +625,7 @@ object Sobre extends Frame {
     text = """<html><body><h1>Editor Potigol</h1>
              |<p>
              |Versão: 0.9.16<br/>
-             |21/03/2019
+             |28/03/2019
              |<p>
              |(c) Copyright Leonardo Lucena, 2015-2019.<p>
              |Visite: <a href="http://potigol.github.io">http://potigol.github.io</a>
